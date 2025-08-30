@@ -61,6 +61,9 @@ public class DBManagementService {
 
     public void findUsersByName(String name) {
         List<User> users = this.userRepository.findUsersByName(name);
+        if (users.isEmpty()) {
+            System.out.println("Пользователи не найдены");
+        }
         for (User user : users) {
             System.out.println(user.toString());
         }
@@ -69,6 +72,11 @@ public class DBManagementService {
 
     public void findUsersByStatus(UserStatus status) {
         List<User> users = this.userRepository.selectUsersByStatus(status);
+
+        if (users.isEmpty()) {
+            System.out.println("Пользователи не найдены");
+        }
+
         for (User user : users) {
             System.out.println(user.toString());
         }
@@ -77,6 +85,11 @@ public class DBManagementService {
 
     public void findUsersBySalary(double lowPos, double highPos) {
         List<User> users = this.userRepository.selectUsersBySalary(lowPos, highPos);
+
+        if (users.isEmpty()) {
+            System.out.println("Пользователи не найдены");
+        }
+
         for (User user : users) {
             System.out.println(user.toString());
         }
@@ -127,6 +140,7 @@ public class DBManagementService {
     //Projects operations
     public void selectAllProjects() {
         List<Project> projects = this.projectsRepository.selectAllProjects();
+
         for (Project project : projects) {
             System.out.println(project.toString());
         }
@@ -153,6 +167,11 @@ public class DBManagementService {
 
     public void findProjectsByStatus(ProjectStatus status) {
         List<Project> projects = this.projectsRepository.findProjectsByStatus(status.getValue());
+
+        if (projects.isEmpty()) {
+            System.out.println("Проекты не найдены");
+        }
+
         for (Project project : projects) {
             System.out.println(project.toString());
         }
@@ -223,6 +242,11 @@ public class DBManagementService {
 
     public void findIntegrationsByProjectName(String projectName) {
         List<Integration> integrations = this.integrationsRepository.findByProjectName(projectName);
+
+        if (integrations.isEmpty()) {
+            System.out.println("Интеграции не найдены");
+        }
+
         for (Integration integration : integrations) {
             System.out.println(integration.toString());
         }
@@ -287,6 +311,11 @@ public class DBManagementService {
 
     public void selectAllByStatus(TaskStatus taskStatus) {
         List<Task> tasks = this.tasksRepository.selectAllByStatus(taskStatus);
+
+        if (tasks.isEmpty()) {
+            System.out.println("Задачи не найдены");
+        }
+
         for (Task task : tasks) {
             System.out.println(task.toString());
         }

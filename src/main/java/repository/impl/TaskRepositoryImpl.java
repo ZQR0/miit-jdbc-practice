@@ -29,7 +29,7 @@ public class TaskRepositoryImpl implements TasksRepository {
 
     @Override
     public List<Task> selectAllTasks() {
-        String query = "SELECT t.id, t.name, t.description, t.status, t.deadline, t.created_at, p.name AS project_name, u.email AS implementer_email" +
+        String query = "SELECT t.id, t.name, t.description, t.status, t.deadline, t.created_at, p.name AS project_name, u.email AS implementer_email " +
                 "FROM tracker_schema.tasks AS t " +
                 "INNER JOIN tracker_schema.projects AS p " +
                 "ON t.project_id = p.id " +
@@ -56,7 +56,7 @@ public class TaskRepositoryImpl implements TasksRepository {
 
     @Override
     public Task selectTaskById(int id) {
-        String query = "SELECT t.id, t.name, t.description, t.status, t.deadline, t.created_at, p.name AS project_name, u.email AS implementer_email" +
+        String query = "SELECT t.id, t.name, t.description, t.status, t.deadline, t.created_at, p.name AS project_name, u.email AS implementer_email " +
                 "FROM tracker_schema.tasks AS t " +
                 "INNER JOIN tracker_schema.projects AS p " +
                 "ON t.project_id = p.id " +
@@ -83,7 +83,7 @@ public class TaskRepositoryImpl implements TasksRepository {
 
     @Override
     public Task selectTaskByName(String name) {
-        String query = "SELECT t.id, t.name, t.description, t.status, t.deadline, t.created_at, p.name AS project_name, u.email AS implementer_email" +
+        String query = "SELECT t.id, t.name, t.description, t.status, t.deadline, t.created_at, p.name AS project_name, u.email AS implementer_email " +
                 "FROM tracker_schema.tasks AS t " +
                 "INNER JOIN tracker_schema.projects AS p " +
                 "ON t.project_id = p.id " +
@@ -110,7 +110,7 @@ public class TaskRepositoryImpl implements TasksRepository {
 
     @Override
     public List<Task> selectAllByStatus(TaskStatus status) {
-        String query = "SELECT t.id, t.name, t.description, t.status, t.deadline, t.created_at, p.name AS project_name, u.email AS implementer_email" +
+        String query = "SELECT t.id, t.name, t.description, t.status, t.deadline, t.created_at, p.name AS project_name, u.email AS implementer_email " +
                 "FROM tracker_schema.tasks AS t " +
                 "INNER JOIN tracker_schema.projects AS p " +
                 "ON t.project_id = p.id " +
@@ -140,12 +140,13 @@ public class TaskRepositoryImpl implements TasksRepository {
     @Override
     public int createNewTask(String name, String description, Date deadline, String projectName, String implementerEmail) {
         String query = "INSERT INTO tracker_schema.tasks (name, description, deadline, project_id, implementer) " +
-                "VALUES (?, ?, ?, " +
+                "VALUES (?, ?, ?::date, " +
                 "(SELECT id FROM tracker_schema.projects WHERE name = ?), " +
                 "(SELECT id FROM tracker_schema.users WHERE email = ?));";
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, name);
@@ -185,6 +186,7 @@ public class TaskRepositoryImpl implements TasksRepository {
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, newName);
@@ -213,6 +215,7 @@ public class TaskRepositoryImpl implements TasksRepository {
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, description);
@@ -241,6 +244,7 @@ public class TaskRepositoryImpl implements TasksRepository {
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, status.toString());

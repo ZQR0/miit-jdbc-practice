@@ -25,7 +25,7 @@ public class IntegrationsRepositoryImpl implements IntegrationsRepository {
         String query = "SELECT i.id, i.name, i.url, p.name AS project_name " +
                 "FROM tracker_schema.integrations AS i " +
                 "INNER JOIN tracker_schema.projects AS p " +
-                "ON i.id = p.id;";
+                "ON i.project_id = p.id;";
 
         List<Integration> integrations = new ArrayList<>();
 
@@ -158,6 +158,7 @@ public class IntegrationsRepositoryImpl implements IntegrationsRepository {
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, name);
@@ -191,6 +192,9 @@ public class IntegrationsRepositoryImpl implements IntegrationsRepository {
         String query = "UPDATE tracker_schema.integrations SET name = ? WHERE name = ?";
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, newName);
             statement.setString(2, oldName);
@@ -217,6 +221,8 @@ public class IntegrationsRepositoryImpl implements IntegrationsRepository {
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, newUrl);
             statement.setString(2, integrationName);
@@ -237,15 +243,19 @@ public class IntegrationsRepositoryImpl implements IntegrationsRepository {
         return "NULL";
     }
 
-    //TODO: перевести SQL запрос на транзакции
+    //FIXME: починить SQL запрос
     @Override
     public String updateIntegrationProject(String integrationName, String projectName) {
-        String query = "UPDATE tracker_schema.integrations SET project_id = " +
-                "(SELECT id FROM tracker_schema.projects WHERE name = ? LIMIT 1) " +
-                "WHERE name = ?;";
+        String query = "update tracker_schema.integrations as i set project_id = (" +
+                "select id from tracker_schema.projects as p " +
+                "where p.name = ? " +
+                "limit 1 " +
+                ") " +
+                "where i.name = ?;";
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, projectName);

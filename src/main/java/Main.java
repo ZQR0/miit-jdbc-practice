@@ -261,7 +261,7 @@ public class Main {
                     case 7:
                         System.out.print("Введите название проекта: ");
                         String projectName = validateNotEmpty(scanner.nextLine(), "Название проекта не может быть пустым");
-                        System.out.println("Доступные статусы: PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD, CANCELLED");
+                        System.out.println("Доступные статусы: PROGRESS или STOPPED");
                         System.out.print("Введите новый статус: ");
                         String newStatusInput = validateNotEmpty(scanner.nextLine(), "Статус не может быть пустым");
                         try {
@@ -478,7 +478,7 @@ public class Main {
                     case 8:
                         System.out.print("Введите название задачи: ");
                         String nameForStatus = validateNotEmpty(scanner.nextLine(), "Название задачи не может быть пустым");
-                        System.out.println("Доступные статусы: TODO, IN_PROGRESS, DONE, CANCELLED");
+                        System.out.println("Доступные статусы: DONE или UNDONE");
                         System.out.print("Введите новый статус: ");
                         String newStatusInput = validateNotEmpty(scanner.nextLine(), "Статус не может быть пустым");
                         try {

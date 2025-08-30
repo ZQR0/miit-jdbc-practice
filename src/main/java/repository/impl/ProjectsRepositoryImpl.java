@@ -111,6 +111,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepository {
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, name);
@@ -146,6 +147,8 @@ public class ProjectsRepositoryImpl implements ProjectsRepository {
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, newName);
             statement.setString(2, oldName);
@@ -173,6 +176,7 @@ public class ProjectsRepositoryImpl implements ProjectsRepository {
 
         try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, status.getValue());
