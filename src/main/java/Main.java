@@ -1,7 +1,10 @@
+import utils.ConnectionSingleton;
 import utils.ProjectStatus;
 import utils.TaskStatus;
 import utils.UserStatus;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,6 +16,16 @@ public class Main {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public static void main(String[] args) {
+
+        try (Connection connection = ConnectionSingleton.INSTANCE.getConnection()) {
+            if (!connection.isClosed()) {
+                System.out.println("Успешно подключено");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Не удалось подключиться");
+            return;
+        }
+
         System.out.println("Система управления базой данных");
         System.out.println("Введите 'стоп' для выхода\n");
 
@@ -509,4 +522,5 @@ public class Main {
         }
         return input.trim();
     }
+
 }
